@@ -565,18 +565,6 @@ class Call(PyTgCalls):
         """Starts all PyTgCalls instances for the existing userbot clients."""
         LOGGER(__name__).info(f"Starting PyTgCall Clients")
 
-    async def decorators(self):
-        for call in self.calls:
-
-            @call.on_update(filters.chat_update(ChatUpdate.Status.LEFT_CALL))
-            async def stream_services_handler(client, update):
-                await self.stop_stream(update.chat_id)
-
-            @call.on_update(filters.stream_end)
-            async def stream_end_handler(client, update: Update):
-                if not isinstance(update, StreamAudioEnded):
-                    return
-                await self.change_stream(client, update.chat_id)
-
+    
 
 Yukki = Call()
