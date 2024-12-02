@@ -358,9 +358,8 @@ async def overall_stats(client, CallbackQuery, _):
     objects = call["objects"]
     collections = call["collections"]
   
-    query = status["opcounters"]["query"]
-    mongouptime = status["uptime"] / 86400
-    mongouptime = str(mongouptime)
+    
+  
     served_chats = len(await get_served_chats())
     served_users = len(await get_served_users())
     total_queries = await get_queries()
