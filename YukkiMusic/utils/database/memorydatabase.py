@@ -485,9 +485,9 @@ async def get_vid_bit_name(chat_id: int) -> str:
     mode = video.get(chat_id)
     if not mode:
         if PRIVATE_BOT_MODE == str(True):
-            return "HD_720p"
+            return "SD_360p"
         else:
-            return "HD_720p"
+            return "SD_360p"
     return mode
 
 
@@ -498,29 +498,29 @@ async def get_audio_bitrate(chat_id: int) -> str:
     if str(mode) == "STUDIO":
         return AudioQuality.STUDIO
     elif str(mode) == "HIGH":
-        return AudioQuality.HIGH
+        return AudioQuality.STUDIO
     elif str(mode) == "MEDIUM":
-        return AudioQuality.MEDIUM
+        return AudioQuality.STUDIO
     elif str(mode) == "LOW":
-        return AudioQuality.LOW
+        return AudioQuality.STUDIO
 
 
 async def get_video_bitrate(chat_id: int) -> str:
     mode = video.get(chat_id)
     if not mode:
         if PRIVATE_BOT_MODE == str(True):
-            return VideoQuality.FHD_1080p
+            return VideoQuality.SD_360p
         else:
-            return VideoQuality.HD_720p
+            return VideoQuality.SD_360p
     if str(mode) == "UHD_4K":
-        return VideoQuality.UHD_4K
+        return VideoQuality.SD_360p
     elif str(mode) == "QHD_2K":
-        return VideoQuality.QHD_2K
+        return VideoQuality.SD_360p
     elif str(mode) == "FHD_1080p":
-        return VideoQuality.FHD_1080p
+        return VideoQuality.SD_360p
     elif str(mode) == "HD_720p":
-        return VideoQuality.HD_720p
+        return VideoQuality.SD_360p
     elif str(mode) == "SD_480p":
-        return VideoQuality.SD_480p
+        return VideoQuality.SD_360p
     elif str(mode) == "SD_360p":
         return VideoQuality.SD_360p
