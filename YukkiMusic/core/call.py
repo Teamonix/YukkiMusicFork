@@ -30,6 +30,7 @@ from pytgcalls.types import (
     GroupCallConfig,
     MediaStream,
     Update,
+    GroupCallParticipant, 
 )
 from pytgcalls.types.stream import StreamAudioEnded
 import config
