@@ -588,16 +588,16 @@ class Call(PyTgCalls):
         @self.three.on_update(ChatUpdate.Status.KICKED)
         @self.four.on_update(ChatUpdate.Status.KICKED)
         @self.five.on_update(ChatUpdate.Status.KICKED)
-        @self.one.on_closed_voice_chat()
-        @self.two.on_closed_voice_chat()
-        @self.three.on_closed_voice_chat()
-        @self.four.on_closed_voice_chat()
-        @self.five.on_closed_voice_chat()
-        @self.one.on_left()
-        @self.two.on_left()
-        @self.three.on_left()
-        @self.four.on_left()
-        @self.five.on_left()
+        @self.one.on_update(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.two.on_update(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.three.on_update(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.four.on_update(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.five.on_update(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.one.on_update(ChatUpdate.Status.LEFT_CALL)
+        @self.two.on_update(ChatUpdate.Status.LEFT_CALL)
+        @self.three.on_update(ChatUpdate.Status.LEFT_CALL)
+        @self.four.on_update(ChatUpdate.Status.LEFT_CALL)
+        @self.five.on_update(ChatUpdate.Status.LEFT_CALL)
         async def stream_services_handler(_, chat_id: int):
             await self.stop_stream(chat_id)
 
@@ -611,11 +611,11 @@ class Call(PyTgCalls):
                 return
             await self.play(client, update.chat_id)
 
-        @self.one.on_participants_change()
-        @self.two.on_participants_change()
-        @self.three.on_participants_change()
-        @self.four.on_participants_change()
-        @self.five.on_participants_change()
+        @self.one.on_update(ChatUpdate.Status.DISCARDED_CALL)
+        @self.two.on_update(ChatUpdate.Status.DISCARDED_CALL)
+        @self.three.on_update(ChatUpdate.Status.DISCARDED_CALL)
+        @self.four.on_update(ChatUpdate.Status.DISCARDED_CALL)
+        @self.five.on_update(ChatUpdate.Status.DISCARDED_CALL)
         async def participants_change_handler(client, update: Update):
             if not isinstance(
                 update, GroupCallParticipant
