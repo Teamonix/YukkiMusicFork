@@ -11,7 +11,7 @@
 import asyncio
 from datetime import datetime, timedelta
 from typing import Union
-
+from pytgcalls.types import ChatUpdate
 from pyrogram import Client
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import (ChatAdminRequired,
@@ -22,9 +22,15 @@ from ntgcalls import TelegramServerError
 from pytgcalls import PyTgCalls
 from pytgcalls.exceptions import (AlreadyJoinedError,
                                   NoActiveGroupCall)
-from pytgcalls.types import (JoinedGroupCallParticipant, 
+from pytgcalls.types import (
                              MediaStream,
-                             LeftGroupCallParticipant, Update)
+                              Update)
+from pytgcalls.types import (
+    ChatUpdate,
+    GroupCallConfig,
+    MediaStream,
+    Update,
+)
 from pytgcalls.types.stream import StreamAudioEnded
 import config
 from strings import get_string
@@ -130,7 +136,7 @@ class Call(PyTgCalls):
         assistant = await group_assistant(self, chat_id)
         try:
             await _clear_(chat_id)
-            await assistant.leave_group_call(chat_id)
+            await assistant.leave_call(chat_id)
         except:
             pass
 
@@ -144,7 +150,7 @@ class Call(PyTgCalls):
         await remove_active_video_chat(chat_id)
         await remove_active_chat(chat_id)
         try:
-            await assistant.leave_group_call(chat_id)
+            await assistant.leave_call(chat_id)
         except:
             pass
 
@@ -154,6 +160,7 @@ class Call(PyTgCalls):
         assistant = await group_assistant(self, chat_id)
         audio_stream_quality = await get_audio_bitrate(chat_id)
         video_stream_quality = await get_video_bitrate(chat_id)
+        call_config = GroupCallConfig(auto_start=False)
         stream = (
             MediaStream(
                 link,
@@ -167,7 +174,7 @@ class Call(PyTgCalls):
                 video_flags=MediaStream.IGNORE,
             )
         )
-        await assistant.change_stream(
+        await assistant.play(
             chat_id,
             stream,
         )
@@ -193,11 +200,11 @@ class Call(PyTgCalls):
                 video_flags=MediaStream.IGNORE,
             )
         )
-        await assistant.change_stream(chat_id, stream)
+        await assistant.play(chat_id, stream)
 
     async def stream_call(self, link):
         assistant = await group_assistant(self, config.LOG_GROUP_ID)
-        await assistant.join_group_call(
+        await assistant.play(
             config.LOG_GROUP_ID,
             MediaStream(link),
         )
@@ -287,7 +294,7 @@ class Call(PyTgCalls):
             )
         )
         try:
-            await assistant.join_group_call(
+            await assistant.play(
                 chat_id,
                 stream,
             )
@@ -297,7 +304,7 @@ class Call(PyTgCalls):
             except Exception as e:
                 raise e
             try:
-                await assistant.join_group_call(
+                await assistant.play(
                     chat_id,
                     stream,
                 )
@@ -326,7 +333,7 @@ class Call(PyTgCalls):
                     minutes=AUTO_END_TIME
                 )
 
-    async def change_stream(self, client, chat_id):
+    async def play(self, client, chat_id):
         check = db.get(chat_id)
         popped = None
         loop = await get_loop(chat_id)
@@ -341,11 +348,11 @@ class Call(PyTgCalls):
                     await auto_clean(popped)
             if not check:
                 await _clear_(chat_id)
-                return await client.leave_group_call(chat_id)
+                return await client.leave_call(chat_id)
         except:
             try:
                 await _clear_(chat_id)
-                return await client.leave_group_call(chat_id)
+                return await client.leave_call(chat_id)
             except:
                 return
         else:
@@ -431,7 +438,7 @@ class Call(PyTgCalls):
                     )
                 )
                 try:
-                    await client.change_stream(chat_id, stream)
+                    await client.play(chat_id, stream)
                 except Exception:
                     return await app.send_message(
                         original_chat_id,
@@ -466,7 +473,7 @@ class Call(PyTgCalls):
                     )
                 )
                 try:
-                    await client.change_stream(chat_id, stream)
+                    await client.play(chat_id, stream)
                 except Exception:
                     return await app.send_message(
                         original_chat_id,
@@ -496,7 +503,7 @@ class Call(PyTgCalls):
                     )
                 )
                 try:
-                    await client.change_stream(chat_id, stream)
+                    await client.play(chat_id, stream)
                 except Exception:
                     return await app.send_message(
                         original_chat_id,
@@ -571,21 +578,21 @@ class Call(PyTgCalls):
             await self.five.start()
 
     async def decorators(self):
-        @self.one.on_kicked()
-        @self.two.on_kicked()
-        @self.three.on_kicked()
-        @self.four.on_kicked()
-        @self.five.on_kicked()
-        @self.one.on_closed_voice_chat()
-        @self.two.on_closed_voice_chat()
-        @self.three.on_closed_voice_chat()
-        @self.four.on_closed_voice_chat()
-        @self.five.on_closed_voice_chat()
-        @self.one.on_left()
-        @self.two.on_left()
-        @self.three.on_left()
-        @self.four.on_left()
-        @self.five.on_left()
+        @self.one.on_kicked(ChatUpdate.Status.KICKED)
+        @self.two.on_kicked(ChatUpdate.Status.KICKED)
+        @self.three.on_kicked(ChatUpdate.Status.KICKED)
+        @self.four.on_kicked(ChatUpdate.Status.KICKED)
+        @self.five.on_kicked(ChatUpdate.Status.KICKED)
+        @self.one.on_closed_voice_chat(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.two.on_closed_voice_chat(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.three.on_closed_voice_chat(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.four.on_closed_voice_chat(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.five.on_closed_voice_chat(ChatUpdate.Status.CLOSED_VOICE_CHAT)
+        @self.one.on_left(ChatUpdate.Status.LEFT_CALL)
+        @self.two.on_left(ChatUpdate.Status.LEFT_CALL)
+        @self.three.on_left(ChatUpdate.Status.LEFT_CALL)
+        @self.four.on_left(ChatUpdate.Status.LEFT_CALL)
+        @self.five.on_left(ChatUpdate.Status.LEFT_CALL)
         async def stream_services_handler(_, chat_id: int):
             await self.stop_stream(chat_id)
 
@@ -606,8 +613,8 @@ class Call(PyTgCalls):
         @self.five.on_participants_change()
         async def participants_change_handler(client, update: Update):
             if not isinstance(
-                update, JoinedGroupCallParticipant
-            ) and not isinstance(update, LeftGroupCallParticipant):
+                update, GroupCallParticipant
+            ) and not isinstance(update, GroupCallParticipant):
                 return
             chat_id = update.chat_id
             users = counter.get(chat_id)
@@ -626,7 +633,7 @@ class Call(PyTgCalls):
             else:
                 final = (
                     users + 1
-                    if isinstance(update, JoinedGroupCallParticipant)
+                    if isinstance(update, GroupCallParticipant)
                     else users - 1
                 )
                 counter[chat_id] = final
