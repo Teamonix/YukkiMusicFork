@@ -62,22 +62,9 @@ class Userbot(Client):
         LOGGER(__name__).info(f"Starting Assistant Clients")
         if config.STRING1:
             await self.one.start()
-            try:
-                await self.one.join_chat("TeamYM")
-                await self.one.join_chat("TheYukki")
-                await self.one.join_chat("YukkiSupport")
-            except:
-                pass
+            
             assistants.append(1)
-            try:
-                await self.one.send_message(
-                    config.LOG_GROUP_ID, "Assistant Started"
-                )
-            except:
-                LOGGER(__name__).error(
-                    f"Assistant Account 1 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
-                )
-                sys.exit()
+    
             get_me = await self.one.get_me()
             self.one.username = get_me.username
             self.one.id = get_me.id
