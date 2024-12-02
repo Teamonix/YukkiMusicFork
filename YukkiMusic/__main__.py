@@ -62,7 +62,7 @@ async def init():
     await userbot.start()
     await Yukki.start()
 
-    
+    await Yukki.decorators()
     LOGGER("YukkiMusic").info("Yukki Music Bot Started Successfully")
     await idle()
 
