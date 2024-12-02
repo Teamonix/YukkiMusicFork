@@ -11,9 +11,8 @@ motor
 pillow
 psutil
 pykeyboard
-py-tgcalls==1.2.9
-ntgcalls==1.1.2
-git+https://github.com/KurimuzonAkuma/pyrogram@dev
+py-tgcalls
+ntgcalls
 python-dotenv
 pyyaml
 requests
@@ -23,3 +22,4 @@ tgcrypto
 youtube-search
 youtube-search-python
 yt-dlp
+git+https://github.com/KurimuzonAkuma/pyrogram@dev
