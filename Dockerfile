@@ -1,4 +1,4 @@
-FROM python:3.10-buster
+FROM python:latest
 RUN apt-get update -y && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends ffmpeg \
     && apt-get clean \
