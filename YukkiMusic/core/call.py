@@ -11,7 +11,7 @@
 import asyncio
 from datetime import datetime, timedelta
 from typing import Union
-from pytgcalls.types import ChatUpdate
+
 from pyrogram import Client
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import (ChatAdminRequired,
@@ -22,16 +22,9 @@ from ntgcalls import TelegramServerError
 from pytgcalls import PyTgCalls
 from pytgcalls.exceptions import (AlreadyJoinedError,
                                   NoActiveGroupCall)
-from pytgcalls.types import (
+from pytgcalls.types import (GroupCallParticipant, 
                              MediaStream,
-                              Update)
-from pytgcalls.types import (
-    ChatUpdate,
-    GroupCallConfig,
-    MediaStream,
-    Update,
-    GroupCallParticipant, 
-)
+                             Update)
 from pytgcalls.types.stream import StreamAudioEnded
 import config
 from strings import get_string
@@ -161,7 +154,6 @@ class Call(PyTgCalls):
         assistant = await group_assistant(self, chat_id)
         audio_stream_quality = await get_audio_bitrate(chat_id)
         video_stream_quality = await get_video_bitrate(chat_id)
-        call_config = GroupCallConfig(auto_start=False)
         stream = (
             MediaStream(
                 link,
@@ -210,7 +202,7 @@ class Call(PyTgCalls):
             MediaStream(link),
         )
         await asyncio.sleep(0.5)
-        await assistant.leave_group_call(config.LOG_GROUP_ID)
+        await assistant.leave_call(config.LOG_GROUP_ID)
 
     async def join_assistant(self, original_chat_id, chat_id):
         language = await get_lang(original_chat_id)
@@ -334,7 +326,7 @@ class Call(PyTgCalls):
                     minutes=AUTO_END_TIME
                 )
 
-    async def play(self, client, chat_id):
+    async def change_stream(self, client, chat_id):
         check = db.get(chat_id)
         popped = None
         loop = await get_loop(chat_id)
@@ -389,7 +381,7 @@ class Call(PyTgCalls):
                     )
                 )
                 try:
-                    await client.change_stream(chat_id, stream)
+                    await client.play(chat_id, stream)
                 except Exception:
                     return await app.send_message(
                         original_chat_id,
@@ -553,18 +545,97 @@ class Call(PyTgCalls):
 
     async def ping(self):
         pings = []
-        for call in self.calls:
-            pings.append(call.ping)
-        if pings:
-            return str(round(sum(pings) / len(pings), 3))
-        else:
-            LOGGER(__name__).error("No active clients for ping calculation.")
-            return "No active clients"
+        if config.STRING1:
+            pings.append(await self.one.ping)
+        if config.STRING2:
+            pings.append(await self.two.ping)
+        if config.STRING3:
+            pings.append(await self.three.ping)
+        if config.STRING4:
+            pings.append(await self.four.ping)
+        if config.STRING5:
+            pings.append(await self.five.ping)
+        return str(round(sum(pings) / len(pings), 3))
 
     async def start(self):
-        """Starts all PyTgCalls instances for the existing userbot clients."""
-        LOGGER(__name__).info(f"Starting PyTgCall Clients")
+        LOGGER(__name__).info("Starting PyTgCalls Client\n")
+        if config.STRING1:
+            await self.one.start()
+        if config.STRING2:
+            await self.two.start()
+        if config.STRING3:
+            await self.three.start()
+        if config.STRING4:
+            await self.four.start()
+        if config.STRING5:
+            await self.five.start()
 
-    
+    async def decorators(self):
+        @self.one.on_kicked()
+        @self.two.on_kicked()
+        @self.three.on_kicked()
+        @self.four.on_kicked()
+        @self.five.on_kicked()
+        @self.one.on_closed_voice_chat()
+        @self.two.on_closed_voice_chat()
+        @self.three.on_closed_voice_chat()
+        @self.four.on_closed_voice_chat()
+        @self.five.on_closed_voice_chat()
+        @self.one.on_left()
+        @self.two.on_left()
+        @self.three.on_left()
+        @self.four.on_left()
+        @self.five.on_left()
+        async def stream_services_handler(_, chat_id: int):
+            await self.stop_stream(chat_id)
+
+        @self.one.on_update(ChatUpdate.Status.KICKED)
+        @self.two.on_update(ChatUpdate.Status.KICKED)
+        @self.three.on_update(ChatUpdate.Status.KICKED)
+        @self.four.on_update(ChatUpdate.Status.KICKED)
+        @self.five.on_update(ChatUpdate.Status.KICKED)
+        async def stream_end_handler(client, update: Update):
+            if not isinstance(update, StreamAudioEnded):
+                return
+            await self.play(client, update.chat_id)
+
+        @self.one.on_participants_change()
+        @self.two.on_participants_change()
+        @self.three.on_participants_change()
+        @self.four.on_participants_change()
+        @self.five.on_participants_change()
+        async def participants_change_handler(client, update: Update):
+            if not isinstance(
+                update, GroupCallParticipant
+            ) and not isinstance(update, GroupCallParticipant):
+                return
+            chat_id = update.chat_id
+            users = counter.get(chat_id)
+            if not users:
+                try:
+                    got = len(await client.get_participants(chat_id))
+                except:
+                    return
+                counter[chat_id] = got
+                if got == 1:
+                    autoend[chat_id] = datetime.now() + timedelta(
+                        minutes=AUTO_END_TIME
+                    )
+                    return
+                autoend[chat_id] = {}
+            else:
+                final = (
+                    users + 1
+                    if isinstance(update, GroupCallParticipant)
+                    else users - 1
+                )
+                counter[chat_id] = final
+                if final == 1:
+                    autoend[chat_id] = datetime.now() + timedelta(
+                        minutes=AUTO_END_TIME
+                    )
+                    return
+                autoend[chat_id] = {}
+
 
 Yukki = Call()
