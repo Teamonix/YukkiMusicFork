@@ -11,7 +11,12 @@
 import asyncio
 from datetime import datetime, timedelta
 from typing import Union
-
+from pytgcalls.types import (
+    ChatUpdate,
+    GroupCallConfig,
+    MediaStream,
+    Update,
+)
 from pyrogram import Client
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import (ChatAdminRequired,
@@ -154,6 +159,7 @@ class Call(PyTgCalls):
         assistant = await group_assistant(self, chat_id)
         audio_stream_quality = await get_audio_bitrate(chat_id)
         video_stream_quality = await get_video_bitrate(chat_id)
+        call_config = GroupCallConfig(auto_start=False)
         stream = (
             MediaStream(
                 link,
@@ -170,6 +176,7 @@ class Call(PyTgCalls):
         await assistant.play(
             chat_id,
             stream,
+            config=call_config,
         )
 
     async def seek_stream(
@@ -178,6 +185,7 @@ class Call(PyTgCalls):
         assistant = await group_assistant(self, chat_id)
         audio_stream_quality = await get_audio_bitrate(chat_id)
         video_stream_quality = await get_video_bitrate(chat_id)
+        call_config = GroupCallConfig(auto_start=False)
         stream = (
             MediaStream(
                 file_path,
@@ -193,7 +201,7 @@ class Call(PyTgCalls):
                 video_flags=MediaStream.IGNORE,
             )
         )
-        await assistant.play(chat_id, stream)
+        await assistant.play(chat_id, stream, config=call_config)
 
     async def stream_call(self, link):
         assistant = await group_assistant(self, config.LOG_GROUP_ID)
@@ -273,6 +281,7 @@ class Call(PyTgCalls):
         assistant = await group_assistant(self, chat_id)
         audio_stream_quality = await get_audio_bitrate(chat_id)
         video_stream_quality = await get_video_bitrate(chat_id)
+        call_config = GroupCallConfig(auto_start=False)
         stream = (
             MediaStream(
                 link,
@@ -290,6 +299,7 @@ class Call(PyTgCalls):
             await assistant.play(
                 chat_id,
                 stream,
+                config=call_config,
             )
         except NoActiveGroupCall:
             try:
@@ -300,6 +310,7 @@ class Call(PyTgCalls):
                 await assistant.play(
                     chat_id,
                     stream,
+                    config=call_config,
                 )
             except Exception as e:
                 raise AssistantErr(
@@ -358,6 +369,7 @@ class Call(PyTgCalls):
             streamtype = check[0]["streamtype"]
             audio_stream_quality = await get_audio_bitrate(chat_id)
             video_stream_quality = await get_video_bitrate(chat_id)
+            call_config = GroupCallConfig(auto_start=False)
             videoid = check[0]["vidid"]
             check[0]["played"] = 0
             if "live_" in queued:
@@ -381,7 +393,7 @@ class Call(PyTgCalls):
                     )
                 )
                 try:
-                    await client.play(chat_id, stream)
+                    await client.play(chat_id, stream, config=call_config)
                 except Exception:
                     return await app.send_message(
                         original_chat_id,
