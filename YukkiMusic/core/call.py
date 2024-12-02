@@ -583,11 +583,11 @@ class Call(PyTgCalls):
             await self.five.start()
 
     async def decorators(self):
-        @self.one.on_kicked()
-        @self.two.on_kicked()
-        @self.three.on_kicked()
-        @self.four.on_kicked()
-        @self.five.on_kicked()
+        @self.one.on_update(ChatUpdate.Status.KICKED)
+        @self.two.on_update(ChatUpdate.Status.KICKED)
+        @self.three.on_update(ChatUpdate.Status.KICKED)
+        @self.four.on_update(ChatUpdate.Status.KICKED)
+        @self.five.on_update(ChatUpdate.Status.KICKED)
         @self.one.on_closed_voice_chat()
         @self.two.on_closed_voice_chat()
         @self.three.on_closed_voice_chat()
