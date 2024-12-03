@@ -62,15 +62,16 @@ class Userbot(Client):
         LOGGER(__name__).info(f"Starting Assistant Clients")
         if config.STRING1:
             await self.one.start()
-        
             assistants.append(1)
-    
+            try:
+                await self.two.send_message(
+                    config.LOG_GROUP_ID, "Assistant Started"
+                )
+            except:
+                pass
             get_me = await self.one.get_me()
             self.one.username = get_me.username
             self.one.id = get_me.id
-            await self.send_message(
-                config.LOG_GROUP_ID, "Assistant Started"
-            )
             assistantids.append(get_me.id)
             if get_me.last_name:
                 self.one.name = (
