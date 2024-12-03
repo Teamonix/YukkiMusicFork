@@ -35,7 +35,7 @@ async def auto_leave():
                             ChatType.CHANNEL,
                         ]:
                             if (
-                                i.chat.id != config.LOGGER_ID
+                                i.chat.id != config.LOG_GROUP_ID
                                 and i.chat.id != -1001686672798
                                 and i.chat.id != -1001549206010
                             ):
