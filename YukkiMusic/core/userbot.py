@@ -68,6 +68,9 @@ class Userbot(Client):
             get_me = await self.one.get_me()
             self.one.username = get_me.username
             self.one.id = get_me.id
+            await self.send_message(
+                config.LOG_GROUP_ID, "Assistant Started"
+            )
             assistantids.append(get_me.id)
             if get_me.last_name:
                 self.one.name = (
@@ -78,9 +81,7 @@ class Userbot(Client):
             LOGGER(__name__).info(
                 f"Assistant Started as {self.one.name}"
             )
-            await self.send_message(
-                config.LOG_GROUP_ID, "Assistant Started"
-            )
+            
         if config.STRING2:
             await self.two.start()
             try:
