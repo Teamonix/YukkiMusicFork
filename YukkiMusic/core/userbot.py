@@ -64,7 +64,7 @@ class Userbot(Client):
             await self.one.start()
             assistants.append(1)
             try:
-                await self.two.send_message(
+                await self.one.send_message(
                     config.LOG_GROUP_ID, "Assistant Started"
                 )
             except:
