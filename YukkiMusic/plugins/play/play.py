@@ -11,7 +11,7 @@
 import random
 import string
 from ast import ExceptHandler
-
+from YukkiMusic import LOGGER
 from pyrogram import filters
 from pyrogram.types import (InlineKeyboardMarkup, InputMediaPhoto,
                             Message)
@@ -119,6 +119,7 @@ async def play_commnd(
                     forceplay=fplay,
                 )
             except Exception as e:
+                LOGGER(__name__).error("An error occurred", exc_info=True)
                 ex_type = type(e).__name__
                 err = (
                     e
@@ -169,6 +170,7 @@ async def play_commnd(
                     forceplay=fplay,
                 )
             except Exception as e:
+                LOGGER(__name__).error("An error occurred", exc_info=True)
                 ex_type = type(e).__name__
                 err = (
                     e
@@ -188,6 +190,7 @@ async def play_commnd(
                         message.from_user.id,
                     )
                 except Exception as e:
+                    LOGGER(__name__).error("An error occurred", exc_info=True)
                     print(e)
                     return await mystic.edit_text(_["play_3"])
                 streamtype = "playlist"
@@ -202,6 +205,7 @@ async def play_commnd(
                 try:
                     details, track_id = await YouTube.track(url)
                 except Exception as e:
+                    LOGGER(__name__).error("An error occurred", exc_info=True)
                     print(e)
                     return await mystic.edit_text(_["play_3"])
                 streamtype = "youtube"
@@ -325,6 +329,7 @@ async def play_commnd(
                     forceplay=fplay,
                 )
             except Exception as e:
+                LOGGER(__name__).error("An error occurred", exc_info=True)
                 ex_type = type(e).__name__
                 err = (
                     e
@@ -345,6 +350,7 @@ async def play_commnd(
                     "Please turn on Voice Chat.. Bot is not able to stream urls..",
                 )
             except Exception as e:
+                LOGGER(__name__).error("An error occurred", exc_info=True)
                 return await mystic.edit_text(
                     _["general_3"].format(type(e).__name__)
                 )
@@ -363,6 +369,7 @@ async def play_commnd(
                     forceplay=fplay,
                 )
             except Exception as e:
+                LOGGER(__name__).error("An error occurred", exc_info=True)
                 ex_type = type(e).__name__
                 err = (
                     e
@@ -430,6 +437,7 @@ async def play_commnd(
                 forceplay=fplay,
             )
         except Exception as e:
+            LOGGER(__name__).error("An error occurred", exc_info=True)
             ex_type = type(e).__name__
             err = (
                 e
@@ -575,6 +583,7 @@ async def play_music(client, CallbackQuery, _):
             forceplay=ffplay,
         )
     except Exception as e:
+        LOGGER(__name__).error("An error occurred", exc_info=True)
         ex_type = type(e).__name__
         err = (
             e
@@ -685,6 +694,7 @@ async def play_playlists_command(client, CallbackQuery, _):
             forceplay=ffplay,
         )
     except Exception as e:
+        LOGGER(__name__).error("An error occurred", exc_info=True)
         ex_type = type(e).__name__
         err = (
             e
