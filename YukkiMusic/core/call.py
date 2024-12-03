@@ -170,7 +170,7 @@ class Call(PyTgCalls):
             else MediaStream(
                 link, 
                 audio_parameters=audio_stream_quality,
-                video_flags=MediaStream.IGNORE,
+                video_flags=MediaStream.Flags.IGNORE,
             )
         )
         await assistant.play(
@@ -198,7 +198,7 @@ class Call(PyTgCalls):
                 file_path,
                 audio_parameters=audio_stream_quality,
                 ffmpeg_parameters=f"-ss {to_seek} -t {duration}",
-                video_flags=MediaStream.IGNORE,
+                video_flags=MediaStream.Flags.IGNORE,
             )
         )
         await assistant.play(chat_id, stream, config=call_config)
@@ -292,7 +292,7 @@ class Call(PyTgCalls):
             else MediaStream(
                 link, 
                 audio_parameters=audio_stream_quality,
-                video_flags=MediaStream.IGNORE,
+                video_flags=MediaStream.Flags.IGNORE,
             )
         )
         try:
@@ -389,7 +389,7 @@ class Call(PyTgCalls):
                     else MediaStream(
                         link, 
                         audio_parameters=audio_stream_quality,
-                        video_flags=MediaStream.IGNORE,
+                        video_flags=MediaStream.Flags.IGNORE,
                     )
                 )
                 try:
@@ -439,7 +439,7 @@ class Call(PyTgCalls):
                     else MediaStream(
                         file_path,
                         audio_parameters=audio_stream_quality,
-                        video_flags=MediaStream.IGNORE,
+                        video_flags=MediaStream.Flags.IGNORE,
                     )
                 )
                 try:
@@ -474,7 +474,7 @@ class Call(PyTgCalls):
                     else MediaStream(
                         videoid, 
                         audio_parameters=audio_stream_quality,
-                        video_flags=MediaStream.IGNORE,
+                        video_flags=MediaStream.Flags.IGNORE,
                     )
                 )
                 try:
@@ -504,7 +504,7 @@ class Call(PyTgCalls):
                     else MediaStream(
                         queued, 
                         audio_parameters=audio_stream_quality,
-                        video_flags=MediaStream.IGNORE,
+                        video_flags=MediaStream.Flags.IGNORE,
                     )
                 )
                 try:
