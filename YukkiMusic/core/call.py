@@ -24,7 +24,7 @@ from pyrogram.errors import (ChatAdminRequired,
                              UserNotParticipant)
 from pyrogram.types import InlineKeyboardMarkup
 from ntgcalls import TelegramServerError
-from pytgcalls import PyTgCalls
+from pytgcalls import PyTgCalls, filters
 from pytgcalls.exceptions import (AlreadyJoinedError,
                                   NoActiveGroupCall)
 from pytgcalls.types import (GroupCallParticipant, 
@@ -583,11 +583,13 @@ class Call(PyTgCalls):
             await self.five.start()
 
     async def decorators(self):
-        @self.one.on_update(ChatUpdate.Status.KICKED)
-        @self.two.on_update(ChatUpdate.Status.KICKED)
-        @self.three.on_update(ChatUpdate.Status.KICKED)
-        @self.four.on_update(ChatUpdate.Status.KICKED)
-        @self.five.on_update(ChatUpdate.Status.KICKED)
+        from pytgcalls import filters
+
+        @self.one.on_update(filters.stream_end)
+        @self.two.on_update(filters.stream_end)
+        @self.three.on_update(filters.stream_end)
+        @self.four.on_update(filters.stream_end)
+        @self.five.on_update(filters.stream_end)
         @self.one.on_update(ChatUpdate.Status.CLOSED_VOICE_CHAT)
         @self.two.on_update(ChatUpdate.Status.CLOSED_VOICE_CHAT)
         @self.three.on_update(ChatUpdate.Status.CLOSED_VOICE_CHAT)
