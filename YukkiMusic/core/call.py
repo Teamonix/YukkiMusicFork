@@ -21,7 +21,7 @@ from pytgcalls.types import (
 from pytgcalls.types.stream import StreamAudioEnded
 import config
 from YukkiMusic import LOGGER, YouTube, app
-from YukkiMusic.utils.formatters import check_duration, seconds_to_min, speed_converter
+from YukkiMusic.utils.formatters import seconds_to_min
 from YukkiMusic.misc import db
 from YukkiMusic.utils.database import (
     add_active_chat,
