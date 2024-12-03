@@ -27,6 +27,9 @@ from YukkiMusic.utils.formatters import convert_bytes
 from YukkiMusic.utils.inline.song import song_markup
 
 
+### Multi-Lang Commands
+SONG_COMMAND = get_command("SONG_COMMAND")
+
 
 @app.on_message(
     filters.command(SONG_COMMAND)
