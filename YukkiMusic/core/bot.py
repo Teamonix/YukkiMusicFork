@@ -34,7 +34,9 @@ class YukkiBot(Client):
         get_me = await self.get_me()
         self.username = get_me.username
         self.id = get_me.id
-        
+        await self.send_message(
+                config.LOG_GROUP_ID, "Bot Started"
+        )
         if config.SET_CMDS == str(True):
             try:
                 await self.set_bot_commands(
