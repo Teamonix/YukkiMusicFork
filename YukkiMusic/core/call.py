@@ -605,15 +605,15 @@ class Call(PyTgCalls):
 
         
 
-        @self.one.on_participants_change()
-        @self.two.on_participants_change()
-        @self.three.on_participants_change()
-        @self.four.on_participants_change()
-        @self.five.on_participants_change() 
+        @self.one.on_update(filters.call_participant(GroupCallParticipant.Action.UPDATED))
+        @self.two.on_update(filters.call_participant(GroupCallParticipant.Action.UPDATED))
+        @self.three.on_update(filters.call_participant(GroupCallParticipant.Action.UPDATED))
+        @self.four.on_update(filters.call_participant(GroupCallParticipant.Action.UPDATED))
+        @self.five.on_update(filters.call_participant(GroupCallParticipant.Action.UPDATED))
         async def participants_change_handler(client, update: Update):
             if not isinstance(
-                update, GroupCallParticipant
-            ) and not isinstance(update, GroupCallParticipant):
+                update, GroupCallParticipant.Action.JOINED
+            ) and not isinstance(update, GroupCallParticipant.Action.LEFT):
                 return
             chat_id = update.chat_id
             users = counter.get(chat_id)
@@ -632,7 +632,7 @@ class Call(PyTgCalls):
             else:
                 final = (
                     users + 1
-                    if isinstance(update, GroupCallParticipant)
+                    if isinstance(update, GroupCallParticipant.Action.JOINED)
                     else users - 1
                 )
                 counter[chat_id] = final
@@ -642,6 +642,5 @@ class Call(PyTgCalls):
                     )
                     return
                 autoend[chat_id] = {}
-
 
 Yukki = Call()
