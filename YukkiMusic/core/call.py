@@ -9,6 +9,7 @@ from pyrogram.errors import (
     UserNotParticipant,
 )
 from pyrogram.types import InlineKeyboardMarkup
+from pyrogram.enums import ChatMemberStatus
 from pytgcalls import PyTgCalls, filters
 from ntgcalls import TelegramServerError
 from pytgcalls.types import ChatUpdate, GroupCallParticipant
@@ -225,7 +226,7 @@ class Call(PyTgCalls):
                 get = await app.get_chat_member(chat_id, userbot.id)
             except ChatAdminRequired:
                 raise AssistantErr(_["call_1"])
-            if get.status == "banned" or get.status == "kicked":
+            if get.status == ChatMemberStatus.BANNED or get.status == ChatMemberStatus.KICKED:
                 try:
                     await app.unban_chat_member(chat_id, userbot.id)
                 except:
@@ -326,16 +327,16 @@ class Call(PyTgCalls):
                 )
             except Exception:
                 raise AssistantErr(
-                    f"**Â» É´á´ á´á´á´Éªá´ á´ á´ Éªá´á´á´á´Êá´á´ Òá´á´É´á´.**\n\ná´©Êá´á´sá´ á´á´á´á´ sá´Êá´ Êá´á´ sá´á´Êá´á´á´ á´Êá´ á´ Éªá´á´á´á´Êá´á´."
+                    f"**No Active Voice Chat Found**\n\nPlease make sure group's voice chat is enabled. If already enabled, please end it and start fresh voice chat again and if the problem continues, try /restart"
                 )
 
         except AlreadyJoinedError:
             raise AssistantErr(
-                "**á´ssÉªsá´á´É´á´ á´ÊÊá´á´á´Ê ÉªÉ´ á´ Éªá´á´á´á´Êá´á´**\n\ná´á´sÉªá´ Êá´á´ sÊsá´á´á´s á´á´á´á´á´á´á´á´ á´Êá´á´ á´ssÉªá´á´É´á´ Éªs á´ÊÊá´á´á´Ê ÉªÉ´ á´Êá´ á´ Éªá´á´á´á´Êá´á´, ÉªÒ á´ÊÉªs á´©Êá´ÊÊá´á´ á´á´É´á´ÉªÉ´á´á´s Êá´sá´á´Êá´ á´Êá´ á´ Éªá´á´á´á´Êá´á´ á´É´á´ á´ÊÊ á´É¢á´ÉªÉ´."
+                "**Assistant Already in Voice Chat**\n\nSystems have detected that assistant is already there in the voice chat, this issue generally comes when you play 2 queries together.\n\nIf assistant is not present in voice chat, please end voice chat and start fresh voice chat again and if the  problem continues, try /restart"
             )
         except TelegramServerError:
             raise AssistantErr(
-                "**á´á´Êá´É¢Êá´á´ sá´Êá´ á´Ê á´ÊÊá´Ê**\n\ná´©Êá´á´sá´ á´á´ÊÉ´ á´ÒÒ á´É´á´ Êá´sá´á´Êá´ á´Êá´ á´ Éªá´á´á´á´Êá´á´ á´É¢á´ÉªÉ´."
+                "**Telegram Server Error**\n\nTelegram is having some internal server problems, Please try playing again.\n\n If this problem keeps coming everytime, please end your voice chat and start fresh voice chat again."
             )
         except Exception as e:
             if "phone.CreateGroupCall" in str(e):
