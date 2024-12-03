@@ -613,11 +613,13 @@ class Call(PyTgCalls):
                 return
             await self.play(client, update.chat_id)
 
-        @self.one.on_update(ChatUpdate.Status.DISCARDED_CALL)
-        @self.two.on_update(ChatUpdate.Status.DISCARDED_CALL)
-        @self.three.on_update(ChatUpdate.Status.DISCARDED_CALL)
-        @self.four.on_update(ChatUpdate.Status.DISCARDED_CALL)
-        @self.five.on_update(ChatUpdate.Status.DISCARDED_CALL)
+        
+
+         @self.one.on_update(filters.stream_end)
+         @self.two.on_update(filters.stream_end)
+         @self.three.on_update(filters.stream_end)
+         @self.four.on_update(filters.stream_end)
+         @self.five.on_update(filters.stream_end)
         async def participants_change_handler(client, update: Update):
             if not isinstance(
                 update, GroupCallParticipant
