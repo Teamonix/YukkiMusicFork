@@ -19,6 +19,7 @@ from pyrogram.types import (
     InputMediaVideo,
     Message,
 )
+from strings import get_command
 from config import BANNED_USERS, SONG_DOWNLOAD_DURATION, SONG_DOWNLOAD_DURATION_LIMIT
 from YukkiMusic import YouTube, app
 from YukkiMusic.utils.decorators.language import language, languageCB
@@ -26,7 +27,11 @@ from YukkiMusic.utils.formatters import convert_bytes
 from YukkiMusic.utils.inline.song import song_markup
 
 
-@app.on_message(filters.command("song") & ~BANNED_USERS)
+
+@app.on_message(
+    filters.command(SONG_COMMAND)
+    & ~BANNED_USERS
+)
 @language
 async def song(client, message: Message, _):
     await message.delete()
